@@ -4,5 +4,7 @@ export interface Config {
   chosenOrk: string;
   vendorPublic: string;
   hashedReturnUrl: string;
+  vendorName: string;
   orks: string[];
+  debug?: boolean;
 }

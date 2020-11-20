@@ -21,9 +21,17 @@ function createButton() {
   btn.addEventListener("click", () => openAuth());
 }
 
+// Listen for events
+window.addEventListener("message", (e) => {
+  if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", serverUrl: config.serverUrl, vendorPublic: config.vendorPublic, hashedReturnUrl: config.hashedReturnUrl, orks: config.orks, vendorName: config.vendorName, debug: config.debug }, config.chosenOrk);
+  if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
+  if (e.data.type == "tide-failed") handleTideFailed(e.data);
+  if (e.data.type == "tide-change-ork") handleChangeOrk(e.data);
+});
+
 function openAuth() {
   // Initialize
-  win = window.open(config.chosenOrk, config.homeUrl, "width=550, height=650,top=0,right=0"); // Using name as home url. This is a dirty way I found to feed in the return url initially
+  win = window.open(config.chosenOrk, config.homeUrl, `width=${config.debug ? "900" : "550"}, height=650,top=0,right=0`); // Using name as home url. This is a dirty way I found to feed in the return url initially
   if (win == null) return;
   updateStatus("Awaiting login");
   toggleProcessing(true);
@@ -32,14 +40,6 @@ function openAuth() {
   closeCheck = window.setInterval(() => {
     if (win.closed) handleCloseEarly();
   }, 100);
-
-  // Listen for events from window
-  window.addEventListener("message", (e) => {
-    if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", serverUrl: config.serverUrl, vendorPublic: config.vendorPublic, hashedReturnUrl: config.hashedReturnUrl }, config.chosenOrk);
-    if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
-    if (e.data.type == "tide-failed") handleTideFailed(e.data);
-    if (e.data.type == "tide-change-ork") handleChangeOrk(e.data);
-  });
 }
 
 function updateStatus(msg: string) {
@@ -72,8 +72,7 @@ function handleTideFailed(data: any) {
 
 function handleChangeOrk(data: any) {
   clearInterval(closeCheck);
-  win.close();
-  config.chosenOrk = data.newOrk;
+  config.chosenOrk = data.data.newOrk;
   openAuth();
 }
 
