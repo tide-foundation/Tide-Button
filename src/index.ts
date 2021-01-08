@@ -4,15 +4,15 @@ import { btnHtml } from "./btn-html";
 var closeCheck: number;
 var win: Window;
 var btn: Element;
+var iframeElement: Element;
 var logo: Element;
 var logoBack: Element;
 
 var config: Config;
 
-window.onload = () => createButton();
-
 function createButton() {
   btn = document.getElementById("tide");
+  if (btn == null) return;
   btn.innerHTML = btnHtml;
 
   logo = document.getElementById("tide-logo");
@@ -21,17 +21,51 @@ function createButton() {
   btn.addEventListener("click", () => openAuth());
 }
 
+function createFrame(config: Config) {
+  iframeElement = document.getElementById("tide");
+  if (iframeElement == null) return;
+
+  var ifrm = document.createElement("iframe");
+  ifrm.id = "tide-frame";
+  ifrm.name = "testing";
+  ifrm.setAttribute("src", config.chosenOrk);
+  ifrm.style.width = "550px";
+  ifrm.style.height = "650px";
+  iframeElement.appendChild(ifrm);
+}
+
 // Listen for events
 window.addEventListener("message", (e) => {
-  if (e.data.type == "tide-onload") win.postMessage({ type: "tide-init", serverUrl: config.serverUrl, vendorPublic: config.vendorPublic, hashedReturnUrl: config.hashedReturnUrl, orks: config.orks, vendorName: config.vendorName, debug: config.debug }, config.chosenOrk);
+  console.log(e.data.type);
+  if (e.data.type == "tide-onload")
+    win.postMessage(
+      {
+        type: "tide-init",
+        serverUrl: config.serverUrl,
+        vendorPublic: config.vendorPublic,
+        hashedReturnUrl: config.hashedReturnUrl,
+        orks: config.orks,
+        vendorName: config.vendorName,
+        debug: config.debug,
+        formData: {
+          type: "create",
+          data: { pass: "123456", user: "jose" },
+          closeAfter: true,
+        },
+        keepOpen: true,
+      },
+      config.chosenOrk
+    );
   if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
   if (e.data.type == "tide-failed") handleTideFailed(e.data);
   if (e.data.type == "tide-change-ork") handleChangeOrk(e.data);
+  if (e.data.type == "tide-send") handleReceiveData(e.data);
+  if (e.data.type == "tide-close") closeWindow();
 });
 
 function openAuth() {
   // Initialize
-  win = window.open(config.chosenOrk, config.homeUrl, `width=${config.debug ? "900" : "550"}, height=650,top=0,right=0`); // Using name as home url. This is a dirty way I found to feed in the return url initially
+  win = window.open(config.chosenOrk, config.homeUrl, `width=${config.debug ? "550" : "550"}, height=650,top=0,right=0`); // Using name as home url. This is a dirty way I found to feed in the return url initially
   if (win == null) return;
   updateStatus("Awaiting login");
   toggleProcessing(true);
@@ -56,12 +90,21 @@ function handleFinishAuthentication(data: any) {
   clearInterval(closeCheck);
   updateStatus("Finishing authentication");
 
-  if (data.data.autoClose) win.close();
-  toggleProcessing(false);
-  win = null;
+  if (data.data.autoClose) closeWindow();
   window.dispatchEvent(new CustomEvent("tide-auth", { detail: data }));
 
   updateStatus("Complete");
+}
+
+function handleReceiveData(data: any) {
+  console.log(data);
+}
+
+function closeWindow() {
+  clearInterval(closeCheck);
+  win.close();
+  toggleProcessing(false);
+  win = null;
 }
 
 function handleTideFailed(data: any) {
@@ -83,4 +126,9 @@ function toggleProcessing(on: boolean) {
 
 export function init(configuration: Config) {
   config = configuration;
+  console.log(config);
+  window.onload = () => {
+    if (config.mode == null || config.mode == "" || config.mode == "button") createButton();
+    else createFrame(config);
+  };
 }

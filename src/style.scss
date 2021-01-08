@@ -1,4 +1,8 @@
 #tide {
+  #tide-frame {
+    border: 0px;
+  }
+
   button {
     position: relative;
     background: #4184f3;
@@ -9,7 +13,7 @@
     border: 0px;
     border-radius: 2px;
     z-index: 1;
-    outline:none;
+    outline: none;
 
     &:hover {
       #logo-back {
@@ -32,8 +36,6 @@
         background: #ff6c00;
       }
     }
-
-    
 
     #tide-content {
       display: flex;
@@ -58,7 +60,7 @@
           }
         }
       }
- 
+
       #tide-title {
         width: 70%;
         font-size: 19px;

@@ -37,6 +37,10 @@ module.exports = {
             source: "./dist/tide-button.js",
             destination: "../Tide-Vendor/Tide.Vendor/Client/public/tide-button.js",
           },
+          {
+            source: "./dist/tide-button.js",
+            destination: "../NewCorp/NewCorp/NewCorp/client/public/tide-button.js",
+          },
         ],
       },
     }),

@@ -1,4 +1,5 @@
 export interface Config {
+  mode: string;
   homeUrl: string;
   serverUrl: string;
   chosenOrk: string;
@@ -7,4 +8,7 @@ export interface Config {
   vendorName: string;
   orks: string[];
   debug?: boolean;
+
+  formData?: any;
+  keepOpen: boolean;
 }
