@@ -36,8 +36,9 @@ function createFrame(config: Config) {
 
 // Listen for events
 window.addEventListener("message", (e) => {
-  console.log(e.data.type);
-  if (e.data.type == "tide-onload")
+  console.log(e.data);
+  if (e.data.type == "tide-onload") {
+    console.log("loaded");
     win.postMessage(
       {
         type: "tide-init",
@@ -47,15 +48,13 @@ window.addEventListener("message", (e) => {
         orks: config.orks,
         vendorName: config.vendorName,
         debug: config.debug,
-        formData: {
-          type: "create",
-          data: { pass: "123456", user: "jose" },
-          closeAfter: true,
-        },
+        formData: config.formData,
         keepOpen: true,
       },
       config.chosenOrk
     );
+  }
+
   if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
   if (e.data.type == "tide-failed") handleTideFailed(e.data);
   if (e.data.type == "tide-change-ork") handleChangeOrk(e.data);
