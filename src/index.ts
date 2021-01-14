@@ -18,6 +18,11 @@ function createButton() {
   logo = document.getElementById("tide-logo");
   logoBack = document.getElementById("logo-back");
 
+  if (config.overrideText != null) {
+    var btnText = document.getElementById("tide-title");
+    btnText.innerHTML = config.overrideText;
+  }
+
   btn.addEventListener("click", () => openAuth());
 }
 
@@ -58,7 +63,7 @@ window.addEventListener("message", (e) => {
   if (e.data.type == "tide-authenticated") handleFinishAuthentication(e.data);
   if (e.data.type == "tide-failed") handleTideFailed(e.data);
   if (e.data.type == "tide-change-ork") handleChangeOrk(e.data);
-  if (e.data.type == "tide-send") handleReceiveData(e.data);
+  if (e.data.type == "tide-form") handleReceiveData(e.data);
   if (e.data.type == "tide-close") closeWindow();
 });
 
@@ -96,7 +101,7 @@ function handleFinishAuthentication(data: any) {
 }
 
 function handleReceiveData(data: any) {
-  console.log(data);
+  window.dispatchEvent(new CustomEvent("tide-form", { detail: data }));
 }
 
 function closeWindow() {

@@ -11,4 +11,5 @@ export interface Config {
 
   formData?: any;
   keepOpen: boolean;
+  overrideText?: string;
 }
