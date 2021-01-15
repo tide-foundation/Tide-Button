@@ -9,7 +9,7 @@ var logo: Element;
 var logoBack: Element;
 
 var config: Config;
-
+var mode: string;
 function createButton() {
   btn = document.getElementById("tide");
   if (btn == null) return;
@@ -28,22 +28,24 @@ function createButton() {
 
 function createFrame(config: Config) {
   iframeElement = document.getElementById("tide");
+
   if (iframeElement == null) return;
 
   var ifrm = document.createElement("iframe");
   ifrm.id = "tide-frame";
-  ifrm.name = "testing";
-  ifrm.setAttribute("src", config.chosenOrk);
+
+  ifrm.name = config.homeUrl;
+  ifrm.setAttribute("src", `${config.chosenOrk}${assembleHashParams()}`);
   ifrm.style.width = "550px";
   ifrm.style.height = "650px";
   iframeElement.appendChild(ifrm);
+  win = ifrm.contentWindow;
+  ifrm.onload = () => ifrm.contentWindow.postMessage("tide-check-load", config.chosenOrk);
 }
 
 // Listen for events
 window.addEventListener("message", (e) => {
-  console.log(e.data);
   if (e.data.type == "tide-onload") {
-    console.log("loaded");
     win.postMessage(
       {
         type: "tide-init",
@@ -81,6 +83,7 @@ function openAuth() {
 }
 
 function updateStatus(msg: string) {
+  if (mode != "button") return;
   document.getElementById("status-text").innerHTML = msg;
 }
 
@@ -105,6 +108,7 @@ function handleReceiveData(data: any) {
 }
 
 function closeWindow() {
+  if (mode != "button") return;
   clearInterval(closeCheck);
   win.close();
   toggleProcessing(false);
@@ -124,15 +128,27 @@ function handleChangeOrk(data: any) {
 }
 
 function toggleProcessing(on: boolean) {
+  if (mode != "button") return;
   logo.classList[on ? "add" : "remove"]("processing");
   logoBack.classList[on ? "add" : "remove"]("processing");
 }
 
 export function init(configuration: Config) {
   config = configuration;
-  console.log(config);
-  window.onload = () => {
-    if (config.mode == null || config.mode == "" || config.mode == "button") createButton();
+  if (document.readyState === "complete") {
+    // When navigating back to the page in an SPA we need to give the page time to load.
+    setTimeout(() => {
+      run();
+    }, 200);
+  } else window.onload = () => run();
+
+  function run() {
+    mode = config.mode == null || config.mode == "" || config.mode == "button" ? "button" : "frame";
+    if (mode == "button") createButton();
     else createFrame(config);
-  };
+  }
+}
+
+function assembleHashParams() {
+  return `#origin=${config.homeUrl}`;
 }

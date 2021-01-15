@@ -1,5 +1,5 @@
 export interface Config {
-  mode: string;
+  mode?: string;
   homeUrl: string;
   serverUrl: string;
   chosenOrk: string;
