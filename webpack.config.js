@@ -35,6 +35,10 @@ module.exports = {
         copy: [
           {
             source: "./dist/tide-button.js",
+            destination: "../dauth.me/src/Dauth/Dauth/client/public/tide-button.js",
+          },
+          {
+            source: "./dist/tide-button.js",
             destination: "../Tide-Vendor/Tide.Vendor/Client/public/tide-button.js",
           },
           {

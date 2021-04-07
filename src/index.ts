@@ -143,8 +143,12 @@ export function init(configuration: Config) {
   } else window.onload = () => run();
 
   function run() {
-    mode = config.mode == null || config.mode == "" || config.mode == "button" ? "button" : "frame";
-    if (mode == "button") createButton();
+    mode = "auto";
+    if (config.mode == "button") mode = "button";
+    else if (config.mode == "frame") mode = "frame";
+
+    if (mode == "auto") openAuth();
+    else if (mode == "button") createButton();
     else createFrame(config);
   }
 }
