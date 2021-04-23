@@ -75,6 +75,7 @@ function openAuth() {
   if (win == null) return;
   updateStatus("Awaiting login");
   toggleProcessing(true);
+  win.focus();
 
   // Check for window close
   closeCheck = window.setInterval(() => {

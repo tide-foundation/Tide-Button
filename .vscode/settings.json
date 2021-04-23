@@ -11,5 +11,5 @@
   "files.exclude": {
     "**/node_modules": true
   },
-  "window.title": "Button"
+  "window.title": "BUTTON"
 }
