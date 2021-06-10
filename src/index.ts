@@ -1,4 +1,4 @@
-import { Config } from "./models/Config";
+import { Config, ModeType } from "./models/Config";
 import { btnHtml } from "./btn-html";
 
 var closeCheck: number;
@@ -9,7 +9,7 @@ var logo: Element;
 var logoBack: Element;
 
 var config: Config;
-var mode: string;
+var mode: ModeType;
 function createButton() {
   btn = document.getElementById("tide");
   if (btn == null) return;
@@ -41,6 +41,15 @@ function createFrame(config: Config) {
   iframeElement.appendChild(ifrm);
   win = ifrm.contentWindow;
   ifrm.onload = () => ifrm.contentWindow.postMessage("tide-check-load", config.chosenOrk);
+}
+
+function initManual() {
+  if (config.manualElementId == null) throw Error("No element ID was provided to initialize Tide");
+  var ele = document.getElementById(config.manualElementId);
+
+  ele.addEventListener("click", () => {
+    openAuth();
+  });
 }
 
 // Listen for events
@@ -97,8 +106,6 @@ function handleCloseEarly() {
 function handleFinishAuthentication(data: any) {
   clearInterval(closeCheck);
   updateStatus("Finishing authentication");
-
-  if (data.data.autoClose) closeWindow();
   window.dispatchEvent(new CustomEvent("tide-auth", { detail: data }));
 
   updateStatus("Complete");
@@ -109,7 +116,7 @@ function handleReceiveData(data: any) {
 }
 
 function closeWindow() {
-  if (mode != "button") return;
+  if (mode == "frame") return;
   clearInterval(closeCheck);
   win.close();
   toggleProcessing(false);
@@ -144,12 +151,11 @@ export function init(configuration: Config) {
   } else window.onload = () => run();
 
   function run() {
-    mode = "auto";
-    if (config.mode == "button") mode = "button";
-    else if (config.mode == "frame") mode = "frame";
+    mode = config.mode != null && config.mode != "auto" ? config.mode : "auto";
 
     if (mode == "auto") openAuth();
     else if (mode == "button") createButton();
+    else if (mode == "manual") initManual();
     else createFrame(config);
   }
 }

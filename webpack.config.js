@@ -2,7 +2,7 @@ const path = require("path");
 const FileManagerPlugin = require("filemanager-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: ["./src/index.ts"],
   output: {
     path: path.resolve(__dirname, "dist/"),
@@ -39,16 +39,20 @@ module.exports = {
           },
           {
             source: "./dist/tide-button.js",
-            destination: "../Tide-Vendor/Tide.Vendor/Client/public/tide-button.js",
+            destination: "../secure-api/dAuth/src/dAuth.STS.Identity/wwwroot/dist/js/tide-button.js",
           },
-          {
-            source: "./dist/tide-button.js",
-            destination: "../NewCorp/NewCorp/NewCorp/client/public/tide-button.js",
-          },
-          {
-            source: "./dist/tide-button.js",
-            destination: "../dauth.me/src/test-vendor/Server/client/public/tide-button.js",
-          },
+          // {
+          //   source: "./dist/tide-button.js",
+          //   destination: "../Tide-Vendor/Tide.Vendor/Client/public/tide-button.js",
+          // },
+          // {
+          //   source: "./dist/tide-button.js",
+          //   destination: "../NewCorp/NewCorp/NewCorp/client/public/tide-button.js",
+          // },
+          // {
+          //   source: "./dist/tide-button.js",
+          //   destination: "../basic-tide-app/public/tide-button.js",
+          // },
         ],
       },
     }),

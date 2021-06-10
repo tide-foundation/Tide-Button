@@ -1,5 +1,5 @@
 export interface Config {
-  mode?: string;
+  mode?: ModeType;
   homeUrl: string;
   serverUrl: string;
   chosenOrk: string;
@@ -12,4 +12,7 @@ export interface Config {
   formData?: any;
   keepOpen: boolean;
   overrideText?: string;
+  manualElementId?: string;
 }
+
+export type ModeType = "auto" | "button" | "frame" | "manual";
