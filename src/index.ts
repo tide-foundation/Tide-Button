@@ -66,6 +66,7 @@ window.addEventListener("message", (e) => {
         debug: config.debug,
         formData: config.formData,
         keepOpen: true,
+        style: config.style,
       },
       config.chosenOrk
     );
@@ -80,7 +81,7 @@ window.addEventListener("message", (e) => {
 
 function openAuth() {
   // Initialize
-  win = window.open(config.chosenOrk, config.homeUrl, `width=${config.debug ? "550" : "550"}, height=650,top=0,right=0`); // Using name as home url. This is a dirty way I found to feed in the return url initially
+  win = window.open(config.chosenOrk, config.homeUrl, `width=${config.debug ? "550" : "550"}, height=650,top=150px,right=${window.innerWidth / 2}`); // Using name as home url. This is a dirty way I found to feed in the return url initially
   if (win == null) return;
   updateStatus("Awaiting login");
   toggleProcessing(true);

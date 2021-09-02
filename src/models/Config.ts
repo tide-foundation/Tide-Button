@@ -13,6 +13,13 @@ export interface Config {
   keepOpen: boolean;
   overrideText?: string;
   manualElementId?: string;
+
+  style?: Styles;
+}
+
+export interface Styles {
+  stylesheet: string;
+  logo?: string;
 }
 
 export type ModeType = "auto" | "button" | "frame" | "manual";
