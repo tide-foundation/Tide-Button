@@ -19,9 +19,7 @@ export function init(configuration: Config) {
   config = configuration;
   if (document.readyState === "complete") {
     // When navigating back to the page in an SPA we need to give the page time to load.
-    setTimeout(() => {
-      run();
-    }, 200);
+    setTimeout(() => run(), 200);
   } else window.onload = () => run();
 
   function run() {

@@ -11,18 +11,17 @@ declare global {
     vendorName: string;
     orks: string[];
     debug?: boolean;
+    returnUrl?: string;
 
     formData?: any;
     keepOpen: boolean;
     overrideText?: string;
     manualElementId?: string;
     demoMode: boolean;
-    style?: Styles;
-  }
-
-  interface Styles {
-    stylesheet: string;
     logo?: string;
+    stylesheet?: string;
+
+    finalizeAuthentication: (account: any) => void;
   }
 
   type ModeType = "auto" | "button" | "frame" | "manual" | "redirect";

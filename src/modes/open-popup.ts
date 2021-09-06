@@ -38,7 +38,7 @@ window.addEventListener("message", (e) => {
 
 function handleFinishAuthentication(data: any) {
   clearInterval(closeCheck);
-  window.dispatchEvent(new CustomEvent("tide-auth", { detail: data }));
+  config.finalizeAuthentication(data);
   emitter.emit("updateButtonStatus", "Complete");
 }
 
