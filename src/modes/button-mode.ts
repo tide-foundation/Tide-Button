@@ -23,11 +23,6 @@ function createButton() {
 
   btn.innerHTML = btnHtml;
 
-  if (config.overrideText != null) {
-    var btnText = document.getElementById("tide-title")!;
-    btnText.innerHTML = config.overrideText;
-  }
-
   btn.addEventListener("click", () => openAuth(config));
 
   emitter.on("updateButtonStatus", (s: string) => (statusText.innerHTML = s));
